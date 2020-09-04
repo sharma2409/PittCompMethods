@@ -1,5 +1,5 @@
 #include <iostream>
-//#include <cmath>
+#include <cmath>
 int main()
 {
 	float x[20];
@@ -15,7 +15,7 @@ int main()
 		
 		j=j+2;
 			};
-		//k=exp(2);	
+		k=exp(2);	
 
 	return 0;
 	}
