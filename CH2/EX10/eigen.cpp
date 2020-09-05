@@ -6,7 +6,7 @@ typedef std::complex<double> Complex;
 
 Complex M[5][5];
 
-void newton (Complex a, Complex b, Complex c, Complex trace_M, Complex minor, Complex det) //Function to calculate Eigen Values
+void newton (Complex a, Complex b, Complex c, Complex trace_M, Complex minor, Complex det, Complex M[5][5]) //Function to calculate Eigen Values
 
 {
 	Complex x, f, f_prime,error, x1;
@@ -107,7 +107,37 @@ void newton (Complex a, Complex b, Complex c, Complex trace_M, Complex minor, Co
 	c=x;
 	
 	std::cout<<"The Eigen values are " <<a<<" ,"<<b<<" ,"<<c<<std::endl;
+	
+	Complex lambda,vector_abs,vector[4];
+	
+	vector[1]=Complex(1.0,0.0);
+	
+	
+	for (int i=1;i<=3;i++)
+	{
+		if (i==1)
+		lambda=a;
 		
+		 else if (i==2)
+		lambda=b;
+		
+		else lambda=c;
+		
+		vector[2]=(M[1][2]-(M[2][2]-lambda)*(M[1][2]-lambda))/((M[2][2]-lambda)*M[1][3]-M[1][2]*M[2][3]);	
+	       vector[3]=(lambda-M[1][1]-M[1][3]*vector[2])/M[2][1];
+	       
+	       vector_abs=sqrt(vector[1]*vector[1]+vector[2]*vector[2]+vector[3]*vector[3]);
+	        vector[1]=vector[1]/vector_abs;
+		vector[2]=vector[2]/vector_abs;
+		vector[3]=vector[3]/vector_abs;	
+		
+		std::cout<<"Eigen Vector is ["<<vector[1]<<std::endl<<"                      "<<vector[2]<<std::endl<<"                      "<<vector[3]<<std::endl<<std::endl;
+	
+		
+	}
+	
+
+	
 		}
 		
 
@@ -122,7 +152,7 @@ void eigen(Complex M[5][5], Complex a, Complex b, Complex c) //Loop to calculate
 	
 	det=M[1][1]*(M[2][2]*M[3][3]-M[2][3]*M[3][2])-M[1][2]*(M[2][1]*M[3][3]-M[2][3]*M[3][1])+M[1][3]*(M[2][1]*M[3][2]-M[2][2]*M[3][1]); //Det of Matrix
 	
-	newton(a,b,c,trace_M,minor,det);
+	newton(a,b,c,trace_M,minor,det,M);
 	     
 	}
 	
@@ -144,6 +174,7 @@ M[2][3]=Complex(-0.244017,0.0);
 M[3][1]=Complex(-0.244017,0.0);
 M[3][2]=Complex(0.910684,0.0);
 M[3][3]=Complex(0.333333,0.0);
+
 
 eigen(M,a,b,c);
 
