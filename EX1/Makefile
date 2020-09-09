@@ -1,4 +1,4 @@
-all: exp clean
+all: exp 
 
 OFILES= exp.o
 
@@ -7,6 +7,6 @@ libexp.a:$(OFILES)
 
 exp: $(OFILES)
 	g++ $(OFILES) -o exp
-	
+
 clean:
 	rm -f *.a *.o exp *~	

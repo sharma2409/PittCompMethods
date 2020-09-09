@@ -1,12 +1,11 @@
-all: plus clean
+all: plus 
 
 OFILES= main.o add.o print.o parse.o
 
+plus: libplus.a
+	g++ -L. -lplus -o plus
+
 libplus.a:$(OFILES)
 	ar rc $@ $?
-
-plus: $(OFILES)
-	g++ $(OFILES) -o plus
-	
 clean:
 	rm -f *.a *.o plus *~	
