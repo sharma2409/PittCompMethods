@@ -1,12 +1,14 @@
-all: plus clean
-
+all: plus 
+CXXFLAGS=-fPIC
 OFILES= main.o add.o print.o parse.o
 
-libplus.so:$(OFILES)
-	ar rc $@ $?
+plus: libPlus.so
+	g++ -L. -lPlus -o plus
 
-plus: $(OFILES)
-	g++ $(OFILES) -o plus
-	
+
+libPlus.so:$(OFILES)
+	g++ -shared -o $@ $?
+
+
 clean:
-	rm -f *.a *.o plus *~	
+	rm -f *.so *.o plus *~	

@@ -1,4 +1,4 @@
-all: foo clean
+all: foo
 
 OFILES= foo.o
 libfoo.a:$(OFILES)
@@ -6,6 +6,6 @@ libfoo.a:$(OFILES)
 
 foo: $(OFILES)
 	g++ $(OFILES) -o foo
-	
+
 clean:
 	rm -f *.a *.o foo *~	
