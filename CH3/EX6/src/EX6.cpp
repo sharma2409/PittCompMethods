@@ -12,24 +12,17 @@
 #include "QatGenericFunctions/Variable.h"
 #include "QatGenericFunctions/F1D.h"
 #include "QatGenericFunctions/AbsFunction.h"
+#include "QatPlotting/PlotFunction1D.h"
 #include <cmath>
 using namespace Genfun;
-
-
+ 
 typedef std::complex<double>Complex;
-int main (int argc, char * * argv) {
 
-  // Automatically generated:-------------------------:
-
-  std::string usage= std::string("usage: ") + argv[0]; 
-  if (argc!=1) {
-    std::cout << usage << std::endl;
-  }
-
+double f (double x) {
 //default values
 	double v=0.5;
         double k=0.2;
-        
+        double psi_square;
         Complex I(0,1.0);
   Complex nk=k*sqrt(Complex(1-v));
   
@@ -66,20 +59,38 @@ int main (int argc, char * * argv) {
 
   Eigen::MatrixXcd AInv= A.inverse();
   Eigen::VectorXcd BCDF=AInv*Y;
+
+
+	if (x<0){
+	psi_square=norm(exp(I*k*x)+BCDF(0)*exp(-I*k*x))*norm(exp(I*k*x)+BCDF(0)*exp(-I*k*x));
+	return psi_square;
+	
+	}
+	
+	else if (x>0){
+	psi_square=norm(BCDF(3)*exp(I*k*x))*norm(BCDF(3)*exp(I*k*x));
+	return psi_square;
+	}
+	
+	else { psi_square=norm(BCDF(1)*exp(I*nk*x)+BCDF(2)*exp(I*nk*x))+norm(BCDF(1)*exp(I*nk*x)+BCDF(2)*exp(I*nk*x));
+	
+	return psi_square;}
+	
+	
+
+}
+
+
+int main (int argc, char * * argv) {
+
+  // Automatically generated:-------------------------:
+
+  std::string usage= std::string("usage: ") + argv[0]; 
+  if (argc!=1) {
+    std::cout << usage << std::endl;
+  }
+
   
-  // Till this point the standard problem is solved
-
-Genfun::Variable X;
-        
-Genfun::GENFUNCTION cos=Genfun::F1D(std::cos);
-
-Genfun::GENFUNCTION f1=4*(cos (k*Genfun::Variable())); //Simplified form of the density function in the 1st region
-
-Genfun::GENFUNCTION f2=BCDF(1)*BCDF(1)+BCDF(2)*BCDF(2)+Complex (2.0,0.0)*BCDF(1)*BCDF(2)*(2*cos*cos (real(nk)*Genfun::Variable())); //Simplified form of the density function in the second region
-
-Genfun::GENFUNCTION f3= BCDF(3); //Simplified form of the density function in 3rd region
-
-
   QApplication     app(argc,argv);
   
   QMainWindow window;
@@ -91,14 +102,17 @@ Genfun::GENFUNCTION f3= BCDF(3); //Simplified form of the density function in 3r
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  rect.setXmin(0.0);
+  rect.setXmin(-1.0);
   rect.setXmax(1.0);
   rect.setYmin(0.0);
-  rect.setYmax(1.0);
+  rect.setYmax(4.0);
   
 
   PlotView view(rect);
   window.setCentralWidget(&view);
+  PlotFunction1D p=F1D(f);
+  
+  view.add(&p);
   
   PlotStream titleStream(view.titleTextEdit());
   titleStream << PlotStream::Clear()
