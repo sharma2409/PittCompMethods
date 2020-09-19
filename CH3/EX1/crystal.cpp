@@ -46,13 +46,11 @@ A(2,0)=0.3; A(2,1)=0.2; A(2,2)=1.5;
 
  
 
-cout<<"The area of the crystal using determinants (Matrix) is "<<A.determinant()<<" units";
+cout<<"The area of the crystal using determinants (Matrix) is "<<A.determinant()<<" units"<<endl;
 
  
 
 // (axb).c
-
- 
 
 return 0;
 
