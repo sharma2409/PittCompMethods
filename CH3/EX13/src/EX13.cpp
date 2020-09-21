@@ -112,19 +112,19 @@ x0(2)=0;
 x0(3)=-3;
 x0(4)=2;
 
-Eigen::VectorXd eta(5);
-eta=vec.transpose()*M2*x0;
+//Eigen::VectorXd eta(5);
+//eta=vec.transpose()*M2*x0;
 
-Eigen::VectorXd a(5);
-a=M2*vec;
+//Eigen::VectorXd a(5,5);
+//a=M2*vec;
 
 Variable t;
 Cos cos;
-GENFUNCTION f0=eta(0)*a(0)*cos(sqrt(val(0))*t);
-GENFUNCTION f1=eta(1)*a(1)*cos(sqrt(val(1))*t);
-GENFUNCTION f2=eta(2)*a(2)*cos(sqrt(val(2))*t);
-GENFUNCTION f3=eta(3)*a(3)*cos(sqrt(val(3))*t);
-GENFUNCTION f4=eta(4)*a(4)*cos(sqrt(val(4))*t);
+GENFUNCTION f0=vec.col(0).transpose()*M2*x0(0)*M2*vec.col(0)*cos(sqrt(val(0))*t);
+GENFUNCTION f1=vec.col(1).transpose()*M2*x0(1)*M2*vec.col(1)*cos(sqrt(val(1))*t);
+GENFUNCTION f2=vec.col(2).transpose()*M2*x0(2)*M2*vec.col(2)*cos(sqrt(val(2))*t);
+GENFUNCTION f3=vec.col(3).transpose()*M2*x0(3)*M2*vec.col(3)*cos(sqrt(val(3))*t);
+GENFUNCTION f4=vec.col(4).transpose()*M2*x0(4)*M2*vec.col(4)*cos(sqrt(val(4))*t);
 
 GENFUNCTION fcom=f0+f1+f2+f3+f4;
 
@@ -134,24 +134,23 @@ PlotFunction1D p1=f1;
 PlotFunction1D p2=f2;
 PlotFunction1D p3=f3;
 PlotFunction1D p4=f4;
+PlotFunction1D pcom=fcom;
   
   PRectF rect;
   rect.setXmin(0.0);
-  rect.setXmax(1.0);
-  rect.setYmin(0.0);
-  rect.setYmax(1.0);
+  rect.setXmax(10.0);
+  rect.setYmin(-6.0);
+  rect.setYmax(2.5);
   
-  
-  
-
   PlotView view(rect);
   window.setCentralWidget(&view);
   
 view.add(&p0);
-//view.add(&p1);
-//view.add(&p2);
-//view.add(&p3);
-//view.add(&p4);
+view.add(&p1);
+view.add(&p2);
+view.add(&p3);
+view.add(&p4);
+view.add(&pcom);
 
   
   PlotStream titleStream(view.titleTextEdit());
