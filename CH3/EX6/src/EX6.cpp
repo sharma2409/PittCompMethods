@@ -60,24 +60,23 @@ double f (double x) {
   Eigen::MatrixXcd AInv= A.inverse();
   Eigen::VectorXcd BCDF=AInv*Y;
 
-
-	if (x<0){
-	psi_square=norm(exp(I*k*x)+BCDF(0)*exp(-I*k*x))*norm(exp(I*k*x)+BCDF(0)*exp(-I*k*x));
-	return psi_square;
-	
-	}
-	
-	else if (x>0){
-	psi_square=norm(BCDF(3)*exp(I*k*x))*norm(BCDF(3)*exp(I*k*x));
-	return psi_square;
-	}
-	
-	else { psi_square=norm(BCDF(1)*exp(I*nk*x)+BCDF(2)*exp(I*nk*x))+norm(BCDF(1)*exp(I*nk*x)+BCDF(2)*exp(I*nk*x));
-	
-	return psi_square;}
-	
-	
-
+  if (x<=-1){
+    psi_square=norm(exp(I*k*x)+BCDF(0)*exp(-I*k*x));
+    return psi_square;
+  }
+  
+  else if (x>1){
+    psi_square=norm(BCDF(3)*exp(I*k*x))*norm(BCDF(3)*exp(I*k*x));
+    return psi_square;
+  }
+  
+  else { psi_square=norm(BCDF(1)*exp(I*nk*x)+BCDF(2)*exp(-I*nk*x));
+    
+    return psi_square;
+  }
+  
+  
+  
 }
 
 
@@ -102,10 +101,10 @@ int main (int argc, char * * argv) {
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  rect.setXmin(-1.0);
-  rect.setXmax(1.0);
+  rect.setXmin(-20.0);
+  rect.setXmax(20.0);
   rect.setYmin(0.0);
-  rect.setYmax(4.0);
+  rect.setYmax(2.0);
   
 
   PlotView view(rect);

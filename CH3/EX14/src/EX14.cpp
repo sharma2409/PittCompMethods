@@ -125,7 +125,7 @@ double f(double x, double t){
   Eigen::MatrixXcd AInv= A.inverse();
   Eigen::VectorXcd BCDEFGHI=AInv*Y;
    
-if (x<-2){
+  if (x<-2){
 	
 	if (input==1){
 	sol=real(exp(-I*t)*(exp(I*k*x)+BCDEFGHI(0)*exp(-I*k*x)));}
@@ -141,7 +141,7 @@ if (x<-2){
 	return sol;
 
 	}
-	else if (x>-2 && x<-1){
+	else if (x>=-2 && x<-1){
 	
 	if (input==1){
 	sol=real(exp(-I*t)*(BCDEFGHI(1)*exp(I*nk*x)+BCDEFGHI(2)*exp(-I*nk*x)));}
@@ -157,7 +157,7 @@ if (x<-2){
 	
 	}
 	
-	else if (x>-1 && x<1){
+	else if (x>=-1 && x<1){
 	
 	if (input==1){
 	sol=real(exp(-I*t)*(BCDEFGHI(3)*exp(I*nk_2*x)+BCDEFGHI(4)*exp(-I*nk_2*x)));}
@@ -172,7 +172,7 @@ if (x<-2){
 	
 	}
 	
-	else if (x>1 && x<2){
+	else if (x>=1 && x<2){
 	
 	if (input==1){
 	sol=real(exp(-I*t)*(BCDEFGHI(5)*exp(I*nk*x)+BCDEFGHI(6)*exp(-I*nk*x)));}
@@ -227,10 +227,10 @@ int main (int argc, char * * argv) {
   
   
   PRectF rect;
-  rect.setXmin(-1.99);
-  rect.setXmax(1.99);
-  rect.setYmin(-2.0);
-  rect.setYmax(1.0);
+  rect.setXmin(-20);
+  rect.setXmax(20);
+  rect.setYmin(-2);
+  rect.setYmax(2);
   
 
   PlotView view(rect);
