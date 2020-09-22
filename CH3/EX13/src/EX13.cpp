@@ -145,11 +145,11 @@ PlotFunction1D pcom=fcom;
   PlotView view(rect);
   window.setCentralWidget(&view);
   
-view.add(&p0);
-view.add(&p1);
-view.add(&p2);
-view.add(&p3);
-view.add(&p4);
+//view.add(&p0);
+//view.add(&p1);
+//view.add(&p2);
+//view.add(&p3);
+//view.add(&p4);
 view.add(&pcom);
 
   
