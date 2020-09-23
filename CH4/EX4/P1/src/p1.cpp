@@ -2,10 +2,13 @@
 #include "QatPlotting/PlotStream.h"
 #include "QatPlotting/PlotFunction1D.h"
 #include "QatPlotting/PlotProfile.h"
+#include "QatPlotting/PlotPoint.h"
 #include "QatPlotting/PlotOrbit.h"
 #include "QatGenericFunctions/Theta.h"
 #include "QatGenericFunctions/Variable.h"
 #include "QatGenericFunctions/Exp.h"
+#include "QatGenericFunctions/Cos.h"
+#include "QatGenericFunctions/Sin.h"
 #include "QatGenericFunctions/InterpolatingPolynomial.h"
 #include <QApplication>
 #include <QMainWindow>
@@ -33,9 +36,7 @@ int main (int argc, char * * argv) {
  double x;
  double y;
  };
-
-//std::vector<PPoint> pointColl={{130,227},{230,300},{360,285},{395,300},{480,270},{520,233},{530,190}};
-std::vector<PPoint> pointColl={{-545.18,-23.26},{230,300},{360,285},{395,300},{480,270},{520,233},{530,190}};
+std::vector<PPoint> pointColl={{130,227},{230,300},{360,285},{395,300},{480,270},{520,233},{530,190},{525,110},{557,80}};
   QApplication     app(argc,argv);
   
   QMainWindow window;
@@ -47,10 +48,10 @@ std::vector<PPoint> pointColl={{-545.18,-23.26},{230,300},{360,285},{395,300},{4
   QObject::connect(nextAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  rect.setXmin(-770);
-  rect.setXmax(0);
-  rect.setYmin(-80);
-  rect.setYmax(0);
+  rect.setXmin(0);
+  rect.setXmax(642);
+  rect.setYmin(0);
+  rect.setYmax(422);
 
  
 
@@ -72,35 +73,34 @@ std::vector<PPoint> pointColl={{-545.18,-23.26},{230,300},{360,285},{395,300},{4
   imagePixItem.setScale(1.0);
   imagePixItem.setPos(130,130);
 
-	PlotProfile prof;
-	{
-		PlotProfile::Properties prop;
-		prop.symbolSize=10;
-		prop.pen.setColor("blue");
-		prop.brush.setStyle(Qt::SolidPattern);
-		prof.setProperties(prop);
-		
-		}
+	PlotPoint A(400,100); //New Origin
 
-/*/	PlotOrbit prof2;
-	{ PlotOrbit::Properties prop
+	using namespace Genfun;
+	
+	Genfun::InterpolatingPolynomial I;
+	
+	double r,phi;
+	
+	for (unsigned int i=0; i<pointColl.size();i++) {
+	r=sqrt(pow((pointColl[i].x-400),2.0)+pow((pointColl[i].y-100),2.0));
+	phi=atan2(pointColl[i].y-100.0,pointColl[i].x-400.0);
+	I.addPoint(phi,r);
+	}	
+		
+	Genfun::GENFUNCTION X=I*Cos();
+	Genfun::GENFUNCTION Y=I*Sin();	
+		
+	PlotOrbit prof2(X+400,Y+100,0,2.5);	
+	{       PlotOrbit::Properties prop;
 		prop.pen.setColor("blue");
 		prof2.setProperties(prop);
 	}
 	
-/*/		
-	using namespace Genfun;
-	Genfun::InterpolatingPolynomial ip;
-	
-	for (unsigned int i=0; i<pointColl.size();i++) {
-	ip.addPoint(pointColl[i].x, pointColl[i].y);
-	prof.addPoint(pointColl[i].x, pointColl[i].y);
-	}	
 		
-	PlotFunction1D plotIP=ip;	
+
+	view.add(&prof2);
+	view.add(&A);
 	
-	//view.add(&plotIP);
-	view.add(&prof);
   
   PlotStream titleStream(view.titleTextEdit());
   titleStream << PlotStream::Clear()
@@ -116,7 +116,7 @@ std::vector<PPoint> pointColl={{-545.18,-23.26},{230,300},{360,285},{395,300},{4
 	       << PlotStream::Center()
 	       << PlotStream::Family("Sans Serif")
 	       << PlotStream::Size(16)
-	       << "r position, pixel units"
+	       << "X position, pixel units"
 	       << PlotStream::EndP();
   
   PlotStream yLabelStream(view.yLabelTextEdit());
@@ -124,7 +124,7 @@ std::vector<PPoint> pointColl={{-545.18,-23.26},{230,300},{360,285},{395,300},{4
 	       << PlotStream::Center()
 	       << PlotStream::Family("Sans Serif")
 	       << PlotStream::Size(16)
-	       << "theta position, pixel units"
+	       << "Y position, pixel units"
 	       << PlotStream::EndP();
 
 
