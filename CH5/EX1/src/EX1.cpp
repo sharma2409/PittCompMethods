@@ -16,6 +16,9 @@
 #include "QatGenericFunctions/Sqrt.h"
 #include <cmath>
 #include "QatGenericFunctions/F1D.h"
+#include "QatPlotting/PlotFunction1D.h"
+#include "QatPlotting/PlotProfile.h"
+
 int main (int argc, char * * argv) {
 
   // Automatically generated:-------------------------:
@@ -25,6 +28,13 @@ int main (int argc, char * * argv) {
     std::cout << usage << std::endl;
   }
 
+struct PPoint{
+double x;
+double y;
+
+};
+
+std::vector<PPoint> pointColl={{2,0.00495},{4,0.001556},{6,0.00501846},{8,0.00501895}};
 
   using namespace Genfun;
  //GENFUNCTION f=Tanh();
@@ -49,8 +59,8 @@ GENFUNCTION cosh=Genfun::F1D(std::cosh);
 
 GENFUNCTION f2=sqrt(cosh/sinh);
 
-SimpsonsRule rule;
-SimpleIntegrator integrator(0,1,rule,4);
+OpenTrapezoidRule rule;
+SimpleIntegrator integrator(0,1,rule,8);
   
  double integral2=integrator(f2);
  double trueval2=2.068;
@@ -68,14 +78,36 @@ SimpleIntegrator integrator(0,1,rule,4);
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  rect.setXmin(0.0);
-  rect.setXmax(1.0);
-  rect.setYmin(0.0);
-  rect.setYmax(1.0);
+  rect.setXmin(0.00490);
+  rect.setXmax(0.0050900);
+  rect.setYmin(0.0000001);
+  rect.setYmax(8.0);
   
 
   PlotView view(rect);
+  
+  //view.setLogX(true);
+  view.setLogY(true);
+  
+  PlotProfile prof;
+	{
+		PlotProfile::Properties prop;
+		prop.symbolSize=10;
+		prop.pen.setColor("blue");
+		prop.brush.setStyle(Qt::SolidPattern);
+		prof.setProperties(prop);
+		
+		}
+		
+		for (unsigned int i=0; i<pointColl.size();i++){
+	prof.addPoint(pointColl[i].x,pointColl[i].y);
+	}
+	
+	view.add(&prof);	
+  
   window.setCentralWidget(&view);
+  
+  view.add(&prof);
   
   PlotStream titleStream(view.titleTextEdit());
   titleStream << PlotStream::Clear()
