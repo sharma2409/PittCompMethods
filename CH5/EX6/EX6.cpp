@@ -30,7 +30,8 @@ GENFUNCTION H=exp(-square/2.0);
 
 func=sqrt(pow(2,i)*tgamma(i+1)*pow(2,j)*tgamma(j+1));
 
-GENFUNCTION phi=(sqrt(M_PI)/func)*H*HermitePolynomial(i)*HermitePolynomial(j);
+// This line modified by Boudreau:
+GENFUNCTION phi=1/(sqrt(M_PI)*func)*H*H*HermitePolynomial(i)*HermitePolynomial(j);
 
 mat(i,j)=integrator(phi);
 
