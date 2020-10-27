@@ -10,6 +10,14 @@
 #include <random>
 #include "QatDataAnalysis/Hist1D.h"
 #include "QatPlotting/PlotHist1D.h"
+#include "QatGenericFunctions/Erf.h"
+#include "QatGenericFunctions/Variable.h"
+#include "QatGenericFunctions/Exp.h"
+#include <cmath>
+#include "QatPlotting/PlotFunction1D.h"
+using namespace Genfun;
+using namespace std;
+
 typedef std::mt19937 EngineType;
 
 int main (int argc, char * * argv) {
@@ -20,6 +28,11 @@ int main (int argc, char * * argv) {
   if (argc!=1) {
     std::cout << usage << std::endl;
   }
+  
+  Variable Y;
+  Erf erf;
+  Exp exp;
+  GENFUNCTION I= exp(-3*(Y-3*Y))*(1+erf((Y-12)/(sqrt(2)*2)));
 
 EngineType e;
 Hist1D histogram ("Random", 1000, -10.0, 10.0);
@@ -53,7 +66,14 @@ PlotHist1D ph=histogram;
 PlotView view(ph.rectHint());
 view.add(&ph);
 
+PlotFunction1D pI=I;
 
+{PlotFunction1D::Properties prop;
+  prop.pen.setWidth(3);
+  pI.setProperties(prop);
+  }
+
+//view.add(&pI);
 
   window.setCentralWidget(&view);
   

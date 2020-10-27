@@ -7,10 +7,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-#include <random>
-#include "QatDataAnalysis/Hist1D.h"
-#include "QatPlotting/PlotHist1D.h"
-typedef std::mt19937 EngineType;
 int main (int argc, char * * argv) {
 
   // Automatically generated:-------------------------:
@@ -20,16 +16,6 @@ int main (int argc, char * * argv) {
     std::cout << usage << std::endl;
   }
 
-EngineType e;
-Hist1D histogram ("Random", 1000, -10.0, 10.0);
-
-std::gamma_distribution<double> u(1.5,1.0);
-
-for (int i=0; i<10000; i++){
-
-	double x=u(e);
-	histogram.accumulate(x);
-	}
 
   QApplication     app(argc,argv);
   
@@ -42,16 +28,13 @@ for (int i=0; i<10000; i++){
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  rect.setXmin(-2.0);
+  rect.setXmin(0.0);
   rect.setXmax(1.0);
   rect.setYmin(0.0);
-  rect.setYmax(600.0);
+  rect.setYmax(1.0);
   
-PlotHist1D ph=histogram;
-PlotView view(ph.rectHint());
-view.add(&ph);
 
-  
+  PlotView view(rect);
   window.setCentralWidget(&view);
   
   PlotStream titleStream(view.titleTextEdit());
