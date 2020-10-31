@@ -6,9 +6,13 @@
 #include "QatGenericFunctions/Square.h"
 #include "QatGenericFunctions/Variable.h"
 #include <iostream>
+#include <iomanip>
 #include <cmath>
+
 int main(int argc, char**argv){
 
+  std::cout << std::fixed;
+  std::cout << std::setprecision(3);
 using namespace Genfun;
 using namespace Eigen;
 
@@ -35,9 +39,9 @@ GENFUNCTION H0=exp((-1*sq(x))/2);
 
 GENFUNCTION expecX=(1.0/sqrt(M_PI)/func)*H0*HermitePolynomial(i)*x*H0*HermitePolynomial(j);
 GENFUNCTION expecXsq=(1.0/sqrt(M_PI)/func)*H0*HermitePolynomial(i)*sq(x)*H0*HermitePolynomial(j);
-GENFUNCTION expecD=(1.0/sqrt(M_PI)/func)*HermitePolynomial(i)*(H0*HermitePolynomial(j)).prime();
-GENFUNCTION expecDsq=(1.0/sqrt(M_PI)/func)*HermitePolynomial(i)*((H0*HermitePolynomial(j)).prime()).prime();
-GENFUNCTION expecH= (1.0/sqrt(M_PI)/func)*H0*HermitePolynomial(i)*((0.5)*sq(x)*H0*HermitePolynomial(j)+(-0.5)*(H0*HermitePolynomial(j).prime()).prime());
+GENFUNCTION expecD=H0*(1.0/sqrt(M_PI)/func)*HermitePolynomial(i)*(H0*HermitePolynomial(j)).prime();
+GENFUNCTION expecDsq=H0*(1.0/sqrt(M_PI)/func)*HermitePolynomial(i)*((H0*HermitePolynomial(j)).prime()).prime();
+ GENFUNCTION expecH= (1.0/sqrt(M_PI)/func)*H0*HermitePolynomial(i)* ( 0.5*sq(x)*H0*HermitePolynomial(j)-0.5*(H0*HermitePolynomial(j)).prime().prime());
 
 elem_0=integrator(expecX);
 elem_1=integrator(expecXsq);
