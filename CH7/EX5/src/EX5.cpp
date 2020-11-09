@@ -37,7 +37,7 @@ int main (int argc, char * * argv) {
 EngineType e;
 Hist1D histogram ("Random", 1000, -10.0, 10.0);
 
-std::exponential_distribution<double> u(3.0);
+std::exponential_distribution<double> u(1/3.0);
 std::normal_distribution<double> v(2.0);
 for (int i=0; i<10000; i++){
         double x=0;
