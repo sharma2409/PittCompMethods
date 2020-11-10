@@ -52,7 +52,7 @@ int main (int argc, char * * argv) {
   float l1=1.0;
   float m2=1.0;
   float m1=1.0;
-  float g=9.8;
+  float g=1.0;
   Variable theta1(0,4),theta2(1,4),P1(2,4),P2(3,4);  //Variables for the hamiltonian problem
   
   struct PPoint{
@@ -81,7 +81,7 @@ int main (int argc, char * * argv) {
  
   vector<PPoint> pointColl;
   
-  for (int t=0; t<5; t++)
+  for (double t=0; t<5; t++)
   {
      
    pointColl.push_back({angle1(t),angle2(t)}); 
