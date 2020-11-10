@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include "QatGenericFunctions/Variable.h"
+#include "QatGenericFunctions/FixedConstant.h"
 #include "QatPlotting/PlotProfile.h"
 #include "QatPlotting/PlotFunction1D.h"
 #include "QatGenericFunctions/ButcherTableau.h"
@@ -48,9 +49,11 @@ int main (int argc, char * * argv) {
   float omega0=1;
   
   Variable ETA(0,3),X(1,3),TAU(2,3);
-
+  FixedConstant I(1.0);
+  
   GENFUNCTION DXDTAU=ETA;
   GENFUNCTION DETADTAU=-2*zee*ETA-X;
+  GENFUNCTION DTDTAU  = I%I%I;
   
   ClassicalRungeKuttaTableau t;
   //SimpleRKStepper stepper(t,0.1); //Fixed size control 
@@ -61,10 +64,11 @@ int main (int argc, char * * argv) {
   
   integrator.addDiffEquation(&DXDTAU, "X",0);
   integrator.addDiffEquation(&DETADTAU,"ETA",0);
+  integrator.addDiffEquation(&DTDTAU,"TAU",0);
   
   GENFUNCTION x=*integrator.getFunction(X)*omega0;
   
-  cout<<x(1);
+  cout<<x(1.0);
   
 
   PlotView view(rect);
