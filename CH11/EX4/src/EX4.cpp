@@ -49,7 +49,7 @@ int main (int argc, char * * argv) {
   
   float m=1.0;
   float l=1.0;
-  float g=9.8;
+  float g=1.0;
   
   Variable theta(0,4), phi(1,4), P1(2,4), P2(3,4);
   
@@ -63,15 +63,15 @@ int main (int argc, char * * argv) {
   
   GENFUNCTION Hamiltonian=((0.5/(m*l*l))*(P1*P1+(P2*P2/(sin(theta)*sin(theta)))))-m*g*l*cos(theta);
   
-  GENFUNCTION dthetadt=P1/(m*l*l);
-  GENFUNCTION dphidt=P2/(m*l*l*sin(theta)*sin(theta));
-  GENFUNCTION dP1dt=Hamiltonian.partial(theta);
+  GENFUNCTION dthetadt= Hamiltonian.partial(P1);//P1/(m*l*l);
+  GENFUNCTION dphidt=Hamiltonian.partial(P2); //P2/(m*l*l*sin(theta)*sin(theta));
+  GENFUNCTION dP1dt=-Hamiltonian.partial(theta);
   GENFUNCTION dP2dt=-Hamiltonian.partial(phi);
   
-  integrator.addDiffEquation(&dthetadt,"theta",0);
-  integrator.addDiffEquation(&dphidt,"phi",0);
-  integrator.addDiffEquation(&dP1dt,"P1",1.0);
-  integrator.addDiffEquation(&dP2dt,"P2",1.0);
+  integrator.addDiffEquation(&dthetadt,"theta",0.5);
+  integrator.addDiffEquation(&dphidt,"phi",0.0);
+  integrator.addDiffEquation(&dP1dt,"P1",0.0);
+  integrator.addDiffEquation(&dP2dt,"P2",0.5);
   
   GENFUNCTION angle1= *integrator.getFunction(theta);
   GENFUNCTION angle2= *integrator.getFunction(phi);
@@ -83,7 +83,7 @@ int main (int argc, char * * argv) {
   
   float x,y;
   
-  for (int t=0; t<5; t++)
+  for (double t=0; t<5; t+=0.1)
   {
    
    x=sin(angle1(t))*sin(angle2(t));

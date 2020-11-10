@@ -16,6 +16,7 @@ SOURCES += *.cpp
 
 QMAKE_DEL_FILE=rm -rf
 QMAKE_DISTCLEAN += ../local
+QMAKE_CXXFLAGS += -gdwarf-2
 
 mac {
   PKG_CONFIG_PATH += $$[QT_INSTALL_LIBS]/pkgconfig
