@@ -34,16 +34,11 @@ int main (int argc, char * * argv) {
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  
-  setLogX(true);
-  setLogY(true);
-  rect.setXmin(0.0);
-  rect.setXmax(10);
-  rect.setYmin(0.0);
+
+  rect.setXmin(5);
+  rect.setXmax(7000);
+  rect.setYmin(1e-7);
   rect.setYmax(1e-6);
-  
-  
-  
   
   using namespace Genfun;
   using namespace std;
@@ -78,7 +73,7 @@ int main (int argc, char * * argv) {
   
   vector<PPoint> pointColl;
   
-  for (int t=0; t<10; t++)
+  for (double t=0; t<7000; t+=10)
   {
      
    pointColl.push_back({t,i(t)}); 
@@ -100,7 +95,7 @@ int main (int argc, char * * argv) {
 		}
   
   
-  InterpolatingPolynomial ip;
+  CubicSplinePolynomial ip;
   
   for (unsigned int i=0; i<pointColl.size();i++) {
 	ip.addPoint(pointColl[i].x, pointColl[i].y);

@@ -52,7 +52,7 @@ int main (int argc, char * * argv) {
   float l1=1.0;
   float m2=1.0;
   float m1=1.0;
-  float g=1.0;
+  float g=9.8;
   Variable theta1(0,4),theta2(1,4),P1(2,4),P2(3,4);  //Variables for the hamiltonian problem
   
   struct PPoint{
@@ -72,8 +72,8 @@ int main (int argc, char * * argv) {
   
   integrator.addDiffEquation(&dtheta1dt,"theta1",M_PI/12);
   integrator.addDiffEquation(&dtheta2dt,"theta2",M_PI/12);
-  integrator.addDiffEquation(&dP1dt,"P1",1.0);
-  integrator.addDiffEquation(&dP2dt,"P2",1.0);
+  integrator.addDiffEquation(&dP1dt,"P1",0.1);
+  integrator.addDiffEquation(&dP2dt,"P2",0.1);
   
   
   GENFUNCTION angle1= *integrator.getFunction(theta1);
@@ -81,7 +81,7 @@ int main (int argc, char * * argv) {
  
   vector<PPoint> pointColl;
   
-  for (double t=0; t<5; t++)
+  for (double t=0; t<2; t+=1)
   {
      
    pointColl.push_back({angle1(t),angle2(t)}); 
@@ -104,7 +104,7 @@ int main (int argc, char * * argv) {
 		}
   
   
-  InterpolatingPolynomial ip;
+  CubicSplinePolynomial ip;
   
   for (unsigned int i=0; i<pointColl.size();i++) {
 	ip.addPoint(pointColl[i].x, pointColl[i].y);

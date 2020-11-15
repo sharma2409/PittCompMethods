@@ -16,6 +16,7 @@
 #include "QatGenericFunctions/RKIntegrator.h"
 #include "QatGenericFunctions/AdaptiveRKStepper.h"
 #include "QatGenericFunctions/StepDoublingRKStepper.h"
+
 using namespace Genfun;
 using namespace std;
 
@@ -55,7 +56,13 @@ int main (int argc, char * * argv) {
   GENFUNCTION DETADTAU=-2*zee*ETA-X;
   GENFUNCTION DTDTAU  = I%I%I;
   
-  ClassicalRungeKuttaTableau t;
+  
+  			// Initiating the needed rule
+  			 
+  //ClassicalRungeKuttaTableau t;
+  //EulerTableau t;
+  //MidpointTableau t;
+  TrapezoidTableau t;
   //SimpleRKStepper stepper(t,0.1); //Fixed size control 
   StepDoublingRKStepper stepper0(t); //Adaptive
   
@@ -68,7 +75,7 @@ int main (int argc, char * * argv) {
   
   GENFUNCTION x=*integrator.getFunction(X)*omega0;
   
-  cout<<x(1.0);
+//  cout<<x(1.0);
   
 
   PlotView view(rect);

@@ -38,8 +38,8 @@ int main (int argc, char * * argv) {
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  rect.setXmin(0.0);
-  rect.setXmax(1.0);
+  rect.setXmin(-0.4);
+  rect.setXmax(1);
   rect.setYmin(0.0);
   rect.setYmax(1.0);
   
@@ -49,7 +49,7 @@ int main (int argc, char * * argv) {
   
   float m=1.0;
   float l=1.0;
-  float g=1.0;
+  float g=9.8;
   
   Variable theta(0,4), phi(1,4), P1(2,4), P2(3,4);
   
@@ -83,14 +83,12 @@ int main (int argc, char * * argv) {
   
   float x,y;
   
-  for (double t=0; t<5; t+=0.1)
+  for (double t=0; t<2; t+=0.1)
   {
    
    x=sin(angle1(t))*sin(angle2(t));
    y=sin(angle1(t))*cos(angle2(t));
    pointColl.push_back({x,y}); 
-   
-   cout<<x<<" "<<y<<endl;
    
    
   }
@@ -110,7 +108,8 @@ int main (int argc, char * * argv) {
 		}
   
   
-  InterpolatingPolynomial ip;
+  //InterpolatingPolynomial ip;
+  CubicSplinePolynomial ip;
   
   for (unsigned int i=0; i<pointColl.size();i++) {
 	ip.addPoint(pointColl[i].x, pointColl[i].y);
