@@ -44,8 +44,7 @@ CONFIG    += link_pkgconfig
 # This package depends on and inherits
 # dependencies of (change as needed):
 
-PKGCONFIG += QatPlotWidgets
-QatDataModeling
+PKGCONFIG += QatPlotWidgets QatDataModeling
 
 
 
