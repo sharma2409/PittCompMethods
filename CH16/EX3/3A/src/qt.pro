@@ -45,6 +45,7 @@ CONFIG    += link_pkgconfig
 # dependencies of (change as needed):
 
 PKGCONFIG += QatPlotWidgets
+QatDataModeling
 
 
 
