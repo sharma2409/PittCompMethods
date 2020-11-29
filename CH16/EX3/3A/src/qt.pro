@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = 3a
+TARGET = 3A
 DESTDIR = ../local/bin
 DEPENDPATH += .
 INCLUDEPATH += . .. 
