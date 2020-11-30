@@ -29,21 +29,31 @@ int main (int argc, char * * argv) {
     std::cout << usage << std::endl;
   }
   
-  Variable Y;
+  //Programming the convolution result analytically
+
+  int N =0;  
+  Variable X;
   Erf erf;
   Exp exp;
-  GENFUNCTION I= exp(-3*(Y-3*Y))*(1+erf((Y-12)/(sqrt(2)*2)));
+  GENFUNCTION I= 1.5*exp((-X*X/8)+(X/2)-6)*(1+erf(0.3535*X-4.2426));
+
+
+//Random Variate Generation
 
 EngineType e;
-Hist1D histogram ("Random", 1000, -10.0, 10.0);
 
-std::exponential_distribution<double> u(1/3.0);
+Hist1D histogram ("Random", 1000, -10.0, 60.0);
+Hist1D histogram2 ("Random", 1000, -10.0, 60.0);
+
+std::exponential_distribution<double> u(3.0);
 std::normal_distribution<double> v(2.0);
 for (int i=0; i<10000; i++){
         double x=0;
 	x=u(e)+v(e);
 	histogram.accumulate(x);
 	}
+
+PlotHist1D ph=histogram;
 
 
   QApplication     app(argc,argv);
@@ -57,25 +67,47 @@ for (int i=0; i<10000; i++){
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
   PRectF rect;
-  rect.setXmin(0.0);
-  rect.setXmax(1.0);
+  rect.setXmin(-10.0);
+  rect.setXmax(10.0);
   rect.setYmin(0.0);
-  rect.setYmax(1.0);
+  rect.setYmax(250.0);
+
+//Rejection methods
+  uniform_real_distribution<double> gauss1(-10,10);
+
+  uniform_real_distribution<double> gauss2(0,0.4);
+ 
   
-PlotHist1D ph=histogram;
-PlotView view(ph.rectHint());
-view.add(&ph);
-
-PlotFunction1D pI=I;
-
-{PlotFunction1D::Properties prop;
-  prop.pen.setWidth(3);
-  pI.setProperties(prop);
+  for (int i=0;i<=10*10000;i++){
+    double x1 = gauss1(e);
+    double x2 = gauss2(e);
+    if (N<10000){
+    if (x2<I(x1)){
+    histogram2.accumulate(x1);
+    N++;
+    }
+    }
   }
 
+
+
+
+  
+
+PlotView view(rect);
+
+window.setCentralWidget(&view);
+
+PlotFunction1D pI=I;
+PlotHist1D ph2=histogram2;
+
+//view.add(&ph);
+view.add(&ph2);
 //view.add(&pI);
 
-  window.setCentralWidget(&view);
+
+
+
   
   PlotStream titleStream(view.titleTextEdit());
   titleStream << PlotStream::Clear()

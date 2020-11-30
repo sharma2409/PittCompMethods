@@ -14,6 +14,7 @@
 #include <random>
 #include "QatGenericFunctions/AssociatedLegendre.h"
 #include "QatPlotting/PlotFunction1D.h"
+
 typedef std::mt19937 EngineType;
 
 using namespace std;
@@ -64,14 +65,14 @@ int main (int argc, char * * argv) {
   
   
   PlotHist1D px=hx;
+  
   PlotView view;
   view.add(&px);
   view.setRect(px.rectHint());
   
-  //PlotHist1D pF=F;
+  PlotFunction1D pF=F;
   
-  
-  //view.add(&pF);
+  view.add(&pF);
   PRectF rect;
   rect.setXmin(0.0);
   rect.setXmax(1.0);
