@@ -43,14 +43,14 @@ int main (int argc, char * * argv) {
   
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
-  int bin=100; //Number of bins
+  int bin=200; //Number of bins
   
-  int min=92; //Minimum value of data (estimate)
+  int min=60; //Minimum value of data (estimate)
   int max=110; //Maximum value of data (estimate)
   
   Hist1D histogram (bin, min, max);
   
-  ifstream stream("data00.dat");
+  ifstream stream("data01.dat");
   
   double x;
   
@@ -62,22 +62,31 @@ int main (int argc, char * * argv) {
     histogram.accumulate(x);
   }
   
-  Parameter psigma("sigma", histogram.variance(),0.01,1.0);
-  Parameter pmu("mu", histogram.mean(),histogram.min(),histogram.max());
+  Parameter psigma_1("sigma_1", histogram.variance(),0.01,1.0);
+  Parameter pmu_1("mu_1", 102,histogram.min(),histogram.max());
+  
+  Parameter psigma_2("sigma_2", histogram.variance(),0.01,1.0);
+  Parameter pmu_2("mu_2", 105,histogram.min(),histogram.max());
+  Parameter pfraction("fraction",0.5,0,1);
   
   Variable X;
   
-  //GENFUNCTION lorenzianDistribution= 1.0/(M_PI*psigma*(1+((X-pmu)/psigma)*((X-pmu)/psigma))); //Function for Lorentzian Distribution
-  GENFUNCTION normaldistribution=exp(-(X-pmu)*(X-pmu)/(2*psigma*psigma))/sqrt(2*M_PI)/psigma; //Function for Lagrangian distribution
+  GENFUNCTION lorenzianDistribution_1= 1.0/(M_PI*psigma_1*(1+((X-pmu_1)/psigma_1)*((X-pmu_1)/psigma_1))); //Function for Lorentzian Distribution
+  GENFUNCTION lorenzianDistribution_2= 1.0/(M_PI*psigma_2*(1+((X-pmu_2)/psigma_2)*((X-pmu_2)/psigma_2)));
+  
+  GENFUNCTION frac=pfraction*lorenzianDistribution_1+(1-pfraction)*lorenzianDistribution_2;
  
   HistChi2Functional objectiveFunction(&histogram);
   //GENFUNCTION f= histogram.sum()*lorenzianDistribution;
-  GENFUNCTION f= histogram.sum()*normaldistribution;
+  GENFUNCTION f= histogram.sum()*frac;
   
   bool verbose=true;
   MinuitMinimizer minimizer(verbose);
-  minimizer.addParameter(&psigma);
-  minimizer.addParameter(&pmu);
+  minimizer.addParameter(&psigma_1);
+  minimizer.addParameter(&pmu_1);
+  minimizer.addParameter(&psigma_2);
+  minimizer.addParameter(&pmu_2);
+  minimizer.addParameter(&pfraction);
   minimizer.addStatistic(&objectiveFunction, &f);
   minimizer.minimize(); 
   
@@ -100,7 +109,7 @@ int main (int argc, char * * argv) {
 	      << PlotStream::Center() 
 	      << PlotStream::Family("Sans Serif") 
 	      << PlotStream::Size(16)
-	      <<"Gaussian Fit"
+	      <<"Spectral Over-Lap"
 	      << PlotStream::EndP();
   
   

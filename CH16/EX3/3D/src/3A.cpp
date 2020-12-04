@@ -43,14 +43,14 @@ int main (int argc, char * * argv) {
   
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
-  int bin=100; //Number of bins
+  int bin=200; //Number of bins
   
-  int min=92; //Minimum value of data (estimate)
-  int max=110; //Maximum value of data (estimate)
+  int min=0; //Minimum value of data (estimate)
+  int max=150; //Maximum value of data (estimate)
   
   Hist1D histogram (bin, min, max);
   
-  ifstream stream("data00.dat");
+  ifstream stream("data03.dat");
   
   double x;
   
@@ -62,22 +62,21 @@ int main (int argc, char * * argv) {
     histogram.accumulate(x);
   }
   
-  Parameter psigma("sigma", histogram.variance(),0.01,1.0);
-  Parameter pmu("mu", histogram.mean(),histogram.min(),histogram.max());
+  Parameter pT("T",100.0,0.0,500.0);  //Minimizer cog
+  Parameter pA("A", 1,0,10); //Minimizer Cog
   
   Variable X;
   
-  //GENFUNCTION lorenzianDistribution= 1.0/(M_PI*psigma*(1+((X-pmu)/psigma)*((X-pmu)/psigma))); //Function for Lorentzian Distribution
-  GENFUNCTION normaldistribution=exp(-(X-pmu)*(X-pmu)/(2*psigma*psigma))/sqrt(2*M_PI)/psigma; //Function for Lagrangian distribution
+  
+  GENFUNCTION bose_einstein_distribution= (pA*X*X*X)/(exp(X/pT)-1);  //Bose-Einstein distribution for black-body distribution (non-dimensionalized)
  
   HistChi2Functional objectiveFunction(&histogram);
-  //GENFUNCTION f= histogram.sum()*lorenzianDistribution;
-  GENFUNCTION f= histogram.sum()*normaldistribution;
+  GENFUNCTION f= histogram.sum()*bose_einstein_distribution;
   
   bool verbose=true;
   MinuitMinimizer minimizer(verbose);
-  minimizer.addParameter(&psigma);
-  minimizer.addParameter(&pmu);
+  minimizer.addParameter(&pT);
+  minimizer.addParameter(&pA);
   minimizer.addStatistic(&objectiveFunction, &f);
   minimizer.minimize(); 
   
@@ -85,10 +84,10 @@ int main (int argc, char * * argv) {
   PlotFunction1D fplot(f*1.0/bin*(max-min));
   
   PRectF rect;
-  rect.setXmin(95);
-  rect.setXmax(110);
+  rect.setXmin(0);
+  rect.setXmax(150);
   rect.setYmin(0);
-  rect.setYmax(300);
+  rect.setYmax(200);
   PlotView view(rect);
   window.setCentralWidget(&view);
 
@@ -100,7 +99,7 @@ int main (int argc, char * * argv) {
 	      << PlotStream::Center() 
 	      << PlotStream::Family("Sans Serif") 
 	      << PlotStream::Size(16)
-	      <<"Gaussian Fit"
+	      <<"Black-Body"
 	      << PlotStream::EndP();
   
   

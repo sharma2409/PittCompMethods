@@ -43,14 +43,14 @@ int main (int argc, char * * argv) {
   
   QObject::connect(quitAction, SIGNAL(triggered()), &app, SLOT(quit()));
   
-  int bin=100; //Number of bins
+  int bin=400; //Number of bins
   
-  int min=92; //Minimum value of data (estimate)
-  int max=110; //Maximum value of data (estimate)
+  int min=0; //Minimum value of data (estimate)
+  int max=150; //Maximum value of data (estimate)
   
   Hist1D histogram (bin, min, max);
   
-  ifstream stream("data00.dat");
+  ifstream stream("data04.dat");
   
   double x;
   
@@ -62,22 +62,28 @@ int main (int argc, char * * argv) {
     histogram.accumulate(x);
   }
   
-  Parameter psigma("sigma", histogram.variance(),0.01,1.0);
-  Parameter pmu("mu", histogram.mean(),histogram.min(),histogram.max());
+  Parameter pT1("T1",100.0,0.0,500.0);  //Minimizer cog
+  Parameter pA1("A1", 1,0,10); //Minimizer Cog
+  Parameter pT2("T2",100.0,0.0,500.0);  //Minimizer cog
+  Parameter pA2("A2", 1,0,10); //Minimizer Cog
+  Parameter pfrac("frac",0.4,0,1);
   
   Variable X;
   
-  //GENFUNCTION lorenzianDistribution= 1.0/(M_PI*psigma*(1+((X-pmu)/psigma)*((X-pmu)/psigma))); //Function for Lorentzian Distribution
-  GENFUNCTION normaldistribution=exp(-(X-pmu)*(X-pmu)/(2*psigma*psigma))/sqrt(2*M_PI)/psigma; //Function for Lagrangian distribution
- 
+  
+  GENFUNCTION bose_einstein_distribution_1= (pA1*X*X*X)/(exp(X/pT1)-1);  //Bose-Einstein distribution for black-body distribution (non-dimensionalized)
+  GENFUNCTION bose_einstein_distribution_2= (pA2*X*X*X)/(exp(X/pT2)-1);
+  GENFUNCTION frac=pfrac*bose_einstein_distribution_1+(1-pfrac)*bose_einstein_distribution_2;
   HistChi2Functional objectiveFunction(&histogram);
-  //GENFUNCTION f= histogram.sum()*lorenzianDistribution;
-  GENFUNCTION f= histogram.sum()*normaldistribution;
+  GENFUNCTION f= histogram.sum()*frac;
   
   bool verbose=true;
   MinuitMinimizer minimizer(verbose);
-  minimizer.addParameter(&psigma);
-  minimizer.addParameter(&pmu);
+  minimizer.addParameter(&pT1);
+  minimizer.addParameter(&pA1);
+  minimizer.addParameter(&pT2);
+  minimizer.addParameter(&pA2);
+  minimizer.addParameter(&pfrac);
   minimizer.addStatistic(&objectiveFunction, &f);
   minimizer.minimize(); 
   
@@ -85,8 +91,8 @@ int main (int argc, char * * argv) {
   PlotFunction1D fplot(f*1.0/bin*(max-min));
   
   PRectF rect;
-  rect.setXmin(95);
-  rect.setXmax(110);
+  rect.setXmin(0);
+  rect.setXmax(150);
   rect.setYmin(0);
   rect.setYmax(300);
   PlotView view(rect);
@@ -100,7 +106,7 @@ int main (int argc, char * * argv) {
 	      << PlotStream::Center() 
 	      << PlotStream::Family("Sans Serif") 
 	      << PlotStream::Size(16)
-	      <<"Gaussian Fit"
+	      <<"Black-Body"
 	      << PlotStream::EndP();
   
   
